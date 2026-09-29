@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>One Question a Day</title>
+  <meta name="description" content="Everyone gets the same question each day. Write for five minutes, keep your answers in your own browser, and pass the question on.">
+  <link rel="canonical" href="https://prathammukewar.github.io/one-question/">
+  <meta name="author" content="Pratham Mukewar">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f7f3ea" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#16140f" media="(prefers-color-scheme: dark)">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="One Question a Day">
+  <meta property="og:title" content="One Question a Day">
+  <meta property="og:description" content="Everyone gets the same question each day. Write for five minutes, then pass the question on.">
+  <meta property="og:url" content="https://prathammukewar.github.io/one-question/">
+  <meta property="og:image" content="https://prathammukewar.github.io/one-question/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="One Question a Day. A new question every day, the same one for everyone.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="One Question a Day">
+  <meta name="twitter:description" content="Everyone gets the same question each day. Write for five minutes, then pass the question on.">
+  <meta name="twitter:image" content="https://prathammukewar.github.io/one-question/og-image.png">
+  <meta name="twitter:image:alt" content="One Question a Day. A new question every day, the same one for everyone.">
+
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..500&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('one-question:theme');
+        if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {}
+    })();
+  </script>
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="masthead">
+    <div class="masthead-inner">
+      <a class="wordmark" href="./" data-nav="today">One Question</a>
+      <nav class="nav" aria-label="Sections">
+        <a href="./" data-nav="today">Today</a>
+        <a href="#archive" data-nav="archive">Archive</a>
+        <a href="#about" data-nav="about">About</a>
+      </nav>
+      <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to dark theme">
+        <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false">
+          <circle cx="10" cy="10" r="7.25" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M10 2.75a7.25 7.25 0 0 1 0 14.5z" fill="currentColor"/>
+        </svg>
+        <span class="theme-toggle-text" aria-hidden="true">Dark</span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <section class="view view-today" id="view-today" aria-labelledby="question">
+      <div class="dateline">
+        <span id="issue">#1</span>
+        <span id="today-date"></span>
+      </div>
+
+      <div class="notice" id="new-day" hidden>
+        <p>It’s past midnight, so there’s a new question waiting.</p>
+        <button type="button" class="btn btn-small" id="new-day-go">Go to today’s question</button>
+      </div>
+
+      <aside class="intro" id="intro" aria-label="How this works" hidden>
+        <p>Everyone who visits today gets this same question. Write for five minutes, then send the question to someone else. Your answer stays in this browser.</p>
+        <button type="button" class="text-button" id="intro-dismiss">Got it</button>
+      </aside>
+
+      <p class="kicker" id="today-theme"></p>
+      <h1 class="question" id="question" tabindex="-1"></h1>
+
+      <div class="writer">
+        <label for="answer" class="visually-hidden">Your answer</label>
+        <textarea id="answer" class="answer" rows="7" placeholder="Start anywhere." spellcheck="true" autocomplete="off" aria-describedby="question"></textarea>
+      </div>
+
+      <div class="writer-meta">
+        <p class="writer-counts">
+          <span id="word-count">0 words</span>
+          <span class="sep" aria-hidden="true">&middot;</span>
+          <span id="save-status" role="status" aria-live="polite">Saves as you type</span>
+        </p>
+        <div class="timer" id="timer">
+          <span class="timer-display" id="timer-display"></span>
+          <label class="check">
+            <input type="checkbox" id="timer-on">
+            <span>5-minute timer</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="writer-actions" id="writer-actions">
+        <button type="button" class="btn btn-primary" id="done-btn">I’m done</button>
+      </div>
+
+      <section class="done" id="done" aria-labelledby="done-title" hidden>
+        <h2 class="done-title" id="done-title" tabindex="-1">Saved.</h2>
+        <p class="done-note">It’s kept in this browser, and you can keep editing it above.</p>
+
+        <dl class="stats">
+          <div class="stat">
+            <dt>Current streak</dt>
+            <dd><span class="num" id="stat-current">0</span> <span id="stat-current-unit">days</span></dd>
+          </div>
+          <div class="stat">
+            <dt>Longest streak</dt>
+            <dd><span class="num" id="stat-longest">0</span> <span id="stat-longest-unit">days</span></dd>
+          </div>
+          <div class="stat">
+            <dt>Today</dt>
+            <dd><span class="num" id="stat-words">0</span> <span id="stat-words-unit">words</span></dd>
+          </div>
+        </dl>
+
+        <section class="year-ago" id="year-ago" aria-labelledby="year-ago-title" hidden>
+          <h3 class="section-label" id="year-ago-title">A year ago</h3>
+          <p class="year-ago-meta" id="year-ago-meta"></p>
+          <div class="prose year-ago-text" id="year-ago-text"></div>
+          <p class="year-ago-more" id="year-ago-more"></p>
+        </section>
+
+        <section class="share" aria-labelledby="share-title">
+          <h3 class="section-label" id="share-title">Pass it on</h3>
+
+          <div class="share-row">
+            <div class="share-copy">
+              <p class="share-name">Invite someone</p>
+              <p class="share-desc">Today’s question and a link, so they can answer it too.</p>
+            </div>
+            <button type="button" class="btn" id="copy-invite">Copy invite</button>
+          </div>
+
+          <div class="share-row">
+            <div class="share-copy">
+              <p class="share-name">Your numbers</p>
+              <p class="share-desc share-preview" id="stat-preview"></p>
+            </div>
+            <button type="button" class="btn" id="copy-stats">Copy stat line</button>
+          </div>
+
+          <div class="share-row">
+            <div class="share-copy">
+              <p class="share-name">Markdown</p>
+              <p class="share-desc">The question and your answer, ready to paste into a blog post.</p>
+            </div>
+            <button type="button" class="btn" id="copy-md">Copy as Markdown</button>
+          </div>
+
+          <details class="card-maker" id="card-maker">
+            <summary>
+              <span class="share-copy">
+                <span class="share-name">Image</span>
+                <span class="share-desc">A card with the question, and your words if you want them on it.</span>
+              </span>
+              <span class="btn summary-btn" aria-hidden="true">Make an image</span>
+            </summary>
+            <div class="card-body">
+              <div class="card-options">
+                <fieldset>
+                  <legend>Size</legend>
+                  <label class="choice"><input type="radio" name="card-size" value="portrait" checked> <span>Portrait, 1080 &times; 1350</span></label>
+                  <label class="choice"><input type="radio" name="card-size" value="wide"> <span>Wide, 1200 &times; 630</span></label>
+                </fieldset>
+                <fieldset>
+                  <legend>On the card</legend>
+                  <label class="choice"><input type="radio" name="card-content" value="question" checked> <span>Just the question</span></label>
+                  <label class="choice"><input type="radio" name="card-content" value="answer"> <span>The question and my answer</span></label>
+                  <label class="choice"><input type="radio" name="card-content" value="excerpt"> <span>The question and an excerpt</span></label>
+                </fieldset>
+                <div class="excerpt-field" id="excerpt-field" hidden>
+                  <label class="field-label" for="excerpt">Excerpt</label>
+                  <textarea id="excerpt" class="field" rows="4"></textarea>
+                  <p class="hint">This starts from whatever you had selected in your answer. Change it as much as you like.</p>
+                </div>
+                <fieldset>
+                  <legend>Colors</legend>
+                  <label class="choice"><input type="radio" name="card-palette" value="paper" checked> <span>Paper</span></label>
+                  <label class="choice"><input type="radio" name="card-palette" value="ink"> <span>Ink</span></label>
+                </fieldset>
+                <p class="hint" id="card-hint" hidden>Long answers get cut off. An excerpt usually looks better.</p>
+              </div>
+              <div class="card-preview">
+                <canvas id="card-canvas" class="card-canvas" width="1080" height="1350" role="img" aria-label="Preview of the image"></canvas>
+                <div class="card-actions">
+                  <button type="button" class="btn btn-primary" id="card-copy">Copy image</button>
+                  <button type="button" class="btn" id="card-download">Download PNG</button>
+                  <button type="button" class="btn" id="card-share" hidden>Share</button>
+                </div>
+              </div>
+            </div>
+          </details>
+
+          <p class="status-line" id="share-status" role="status" aria-live="polite"></p>
+        </section>
+      </section>
+
+      <p class="countdown">Next question in <span class="countdown-time" id="countdown">0:00:00</span></p>
+    </section>
+
+    <section class="view view-archive" id="view-archive" aria-labelledby="archive-title" hidden>
+      <h1 class="page-title" id="archive-title" tabindex="-1">Archive</h1>
+      <p class="lede" id="archive-summary"></p>
+
+      <div class="archive-layout">
+        <div class="calendar">
+          <div class="cal-head">
+            <button type="button" class="icon-btn" id="cal-prev" aria-label="Previous month">
+              <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><path d="M12.5 4.5 7 10l5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+            </button>
+            <h2 class="cal-title" id="cal-title" aria-live="polite"></h2>
+            <button type="button" class="icon-btn" id="cal-next" aria-label="Next month">
+              <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false"><path d="M7.5 4.5 13 10l-5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+            </button>
+          </div>
+          <table class="cal-table" aria-labelledby="cal-title" aria-describedby="cal-help">
+            <thead>
+              <tr>
+                <th scope="col" abbr="Sunday">S</th>
+                <th scope="col" abbr="Monday">M</th>
+                <th scope="col" abbr="Tuesday">T</th>
+                <th scope="col" abbr="Wednesday">W</th>
+                <th scope="col" abbr="Thursday">T</th>
+                <th scope="col" abbr="Friday">F</th>
+                <th scope="col" abbr="Saturday">S</th>
+              </tr>
+            </thead>
+            <tbody id="cal-body"></tbody>
+          </table>
+          <p class="legend">
+            <span class="legend-item"><span class="mark mark-done" aria-hidden="true"></span>Answered</span>
+            <span class="legend-item"><span class="mark mark-late" aria-hidden="true"></span>Answered late</span>
+          </p>
+          <p class="visually-hidden" id="cal-help">Arrow keys move between days. Page Up and Page Down change the month.</p>
+        </div>
+
+        <article class="reader" id="reader"></article>
+
+        <div class="search">
+          <label class="field-label" for="search">Search your answers</label>
+          <input type="search" id="search" class="field" autocomplete="off" spellcheck="false">
+          <p class="status-line" id="search-status" role="status" aria-live="polite"></p>
+          <ol class="results" id="search-results"></ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="view view-about" id="view-about" aria-labelledby="about-title" hidden>
+      <h1 class="page-title" id="about-title" tabindex="-1">About</h1>
+
+      <div class="prose about">
+        <p class="lede">One Question a Day works like Wordle, but for thinking. Every date has its own question, and everyone who visits on that date sees the same one. You write for a few minutes, keep what you wrote, and pass the question along if it’s a good one.</p>
+        <p>There are 366 questions, one for each date including February 29. They come back every year on the same day, so October 1 always asks the same thing. When a question returns, you’ll see what you wrote the last time, but only after you’ve written this year’s answer.</p>
+
+        <h2>Streaks</h2>
+        <p>A day counts toward your streak when you answer that day’s question before your own midnight. You can still answer any past question from the <a href="#archive">archive</a>. Those answers are marked late and don’t change your streak.</p>
+
+        <h2 id="privacy" tabindex="-1">Privacy</h2>
+        <p>Your answers are saved in this browser’s local storage and nowhere else. There’s no account and no server, so nobody else can read them. The flip side is that clearing your browser data deletes them, and answers written on your laptop won’t show up on your phone. Download a copy every so often.</p>
+        <p id="analytics-note" hidden>This copy of the site counts page views with GoatCounter. It records visits, never anything you type.</p>
+
+        <h2>Back up your answers</h2>
+        <p>Markdown is good for reading or posting. JSON can be imported into another browser, and importing merges with what’s already here.</p>
+        <div class="button-row">
+          <button type="button" class="btn" id="export-md">Download Markdown</button>
+          <button type="button" class="btn" id="export-json">Download JSON</button>
+          <button type="button" class="btn" id="import-json">Import JSON</button>
+          <input type="file" id="import-file" accept="application/json,.json" hidden>
+        </div>
+        <p class="status-line" id="data-status" role="status" aria-live="polite"></p>
+
+        <h2>Daily reminder</h2>
+        <p>Pick a time and download a calendar file with a daily event that links back here. Open it with Apple Calendar or Outlook, or import it in Google Calendar’s settings.</p>
+        <div class="button-row reminder-row">
+          <label class="field-label inline" for="reminder-time">Remind me at</label>
+          <input type="time" id="reminder-time" class="field field-time" value="09:00">
+          <button type="button" class="btn" id="reminder-download">Download .ics file</button>
+        </div>
+        <p class="status-line" id="reminder-status" role="status" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <noscript>
+      <div class="view prose">
+        <p class="lede">One Question a Day needs JavaScript to show today’s question and to save your answers in this browser.</p>
+      </div>
+    </noscript>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p>Your answers never leave this browser. <a href="#privacy">More on privacy</a></p>
+      <p>Made by <a id="author-link" href="https://github.com/prathammukewar">Pratham Mukewar</a> <span aria-hidden="true">&middot;</span> <a id="source-link" href="https://github.com/prathammukewar/one-question">Source</a></p>
+    </div>
+  </footer>
+
+  <p class="visually-hidden" id="announcer" role="status" aria-live="polite"></p>
+</body>
+</html>
